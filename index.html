@@ -5,19 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gmail PWA</title>
     <link rel="manifest" href="manifest.json">
-    <script>
-        // Gmail を新しいウィンドウで開く
-        function openGmail() {
-            window.open('https://mail.google.com/mail/u/0/#inbox', '_blank');
-        }
-
-        window.onload = () => {
-            openGmail();
-        };
-    </script>
 </head>
 <body>
     <h1>Gmail PWA</h1>
-    <p>Gmail を開いています...</p>
+    <iframe src="https://mail.google.com/" style="width:100%;height:100vh;border:none;"></iframe>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(() => console.log('Service Worker registered'));
+        }
+    </script>
 </body>
 </html>
