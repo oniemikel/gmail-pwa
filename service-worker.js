@@ -1,7 +1,7 @@
-self.addEventListener('install', event => {
-    console.log('Service Worker installed');
+self.addEventListener('install', (event) => {
+    console.log('Service Worker installing.');
 });
 
-self.addEventListener('fetch', event => {
-    // Gmail はキャッシュせず、常に最新を開く
+self.addEventListener('fetch', (event) => {
+    // Gmailはiframe経由なので特にキャッシュ処理はなし
 });
