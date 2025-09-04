@@ -8,6 +8,7 @@
   "start_url": "/index.html?source=pwa",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "orientation": "any",
@@ -44,22 +45,17 @@
       "purpose": "monochrome"
     }
   ],
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
   "screenshots": [
     {
       "src": "/public/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "label": "Launcher screen"
+      "label": "Launcher main screen"
     }
   ],
+  "launch_handler": { "client_mode": "navigate-existing" },
   "protocol_handlers": [
-    {
-      "protocol": "mailto",
-      "url": "/public/handler/mailto.html?url=%s"
-    }
+    { "protocol": "mailto", "url": "/public/handler/mailto.html?url=%s" }
   ],
   "shortcuts": [
     {
@@ -69,13 +65,21 @@
       "description": "Start a new Gmail message quickly."
     }
   ],
-  "prefer_related_applications": false,
-  "related_applications": [],
-  "iarc_rating_id": "none",
-  "scope_extensions": [],
-  "description_for_display": "Launch Gmail quickly and handle mailto links",
-  "background_sync": true,
-  "offline_enabled": true,
-  "periodic_sync": true,
-  "push_notifications": true
+  "related_applications": [
+    {
+      "platform": "windows",
+      "url": "https://www.microsoft.com/store/productId/9wzdncrfhvqm",
+      "id": "9wzdncrfhvqm"
+    }
+  ],
+  "prefer_related_applications": true,
+  "handle_links": "preferred",
+  "share_target": {
+    "action": "/index.html",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  },
+  "edge_side_panel": true,
+  "iarc_rating_id": "PWA-0001",
+  "scope_extensions": []
 }
