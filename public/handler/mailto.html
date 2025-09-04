@@ -28,17 +28,39 @@
 <body>
     <p>Gmail の作成画面へ転送します…</p>
     <p class="muted">自動で移動しない場合は <a id="fallback" href="#">こちら</a> をクリックしてください。</p>
+
     <script>
         (function () {
             const params = new URLSearchParams(location.search);
-            // 仕様: ?url=（ブラウザまたは OS から渡されるエンコード済み mailto）
             const original = params.get("url") || "";
-            // Gmail の公式 mailto ハンドラ形式へ橋渡し
-            const gmail = "https://mail.google.com/mail/?extsrc=mailto&url=" + encodeURIComponent(original);
-            const a = document.getElementById("fallback");
-            a.href = gmail;
 
-            // 即時遷移
+            // mailto: を取り出し
+            const mailto = decodeURIComponent(original).replace(/^mailto:/, "");
+
+            // 宛先とクエリに分割
+            const [toPart, queryPart] = mailto.split("?");
+            const qs = new URLSearchParams(queryPart || "");
+
+            // 各フィールドを Gmail 用に変換
+            const to = encodeURIComponent(toPart || "");
+            const cc = encodeURIComponent(qs.get("cc") || "");
+            const bcc = encodeURIComponent(qs.get("bcc") || "");
+            const subject = encodeURIComponent(qs.get("subject") || "");
+            const body = encodeURIComponent(qs.get("body") || "");
+
+            // Gmail compose URL
+            const gmail =
+                `https://mail.google.com/mail/?view=cm&fs=1` +
+                (to ? `&to=${to}` : "") +
+                (cc ? `&cc=${cc}` : "") +
+                (bcc ? `&bcc=${bcc}` : "") +
+                (subject ? `&su=${subject}` : "") +
+                (body ? `&body=${body}` : "");
+
+            // フォールバックリンク設定
+            document.getElementById("fallback").href = gmail;
+
+            // 自動遷移
             location.replace(gmail);
         })();
     </script>
