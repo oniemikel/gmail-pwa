@@ -1,22 +1,14 @@
 /* eslint-disable no-restricted-globals */
-/**
- * Simple app-shell service worker for the Gmail PWA launcher.
- * - Caches local assets (manifest, icons, HTML/JS)
- * - Provides offline fallback page
- * - Does NOT cache Gmail (cross-origin)
- */
-
 const CACHE_NAME = "gmail-pwa-shell-v1";
 const APP_SHELL = [
-  "/public/manifest.json",
-  "/src/index.html",
-  "/src/main.js",
-  "/public/offline.html",
-  "/public/icons/monochrome.svg",
-  // PNG icons will be picked up by runtime cache if needed
+  "public/manifest.json",
+  "index.html",
+  "main.js",
+  "public/offline.html",
+  "public/icons/monochrome.svg",
 ];
 
-// Install: cache essential assets
+// Install
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
@@ -24,7 +16,7 @@ self.addEventListener("install", (event) => {
   self.skipWaiting();
 });
 
-// Activate: cleanup old caches
+// Activate
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
@@ -38,22 +30,19 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first for local navigations; fallback to offline page
+// Fetch
 self.addEventListener("fetch", (event) => {
   const { request } = event;
-
-  // Only handle same-origin requests
   const isSameOrigin = new URL(request.url).origin === self.location.origin;
 
   if (request.mode === "navigate" && isSameOrigin) {
     event.respondWith(
-      fetch(request).catch(() => caches.match("/public/offline.html"))
+      fetch(request).catch(() => caches.match("public/offline.html"))
     );
     return;
   }
 
   if (isSameOrigin) {
-    // Cache-first for static assets
     event.respondWith(
       caches.match(request).then(
         (cached) =>
@@ -66,9 +55,8 @@ self.addEventListener("fetch", (event) => {
                 .then((cache) => cache.put(request, resClone));
               return res;
             })
-            .catch(() => caches.match("/public/offline.html"))
+            .catch(() => caches.match("public/offline.html"))
       )
     );
   }
-  // Cross-origin (e.g., Gmail) → let it pass through the network
 });
