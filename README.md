@@ -133,6 +133,7 @@ Add-AppxPackage -Path "Gmail PWA.sideload.msix"
 - **Service Worker** によるオフライン対応  
 - **PWABuilder** によるクロスプラットフォーム配布  
 - **Windows MSIX / Sideload** による PWA 配布
+- アイコン画像は ChatGPT により作成
 
 ---
 
