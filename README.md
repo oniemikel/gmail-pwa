@@ -42,7 +42,10 @@ Add-AppxPackage -Path "Gmail PWA.sideload.msix"
 ```
 
 3. Windows の設定で Gmail PWA を既定のメールアプリとして設定できます：
-   - 設定 > アプリ > 既定のアプリ > メール で選択
+   1. 「設定」を開く  
+   2. 「アプリ」 > 「既定のアプリ」を選択  
+   3. 下の方にある「リンクの種類で規定値を選択する」をクリック  
+   4. 「mailto」項目で Gmail PWA を選択
 
 ---
 
