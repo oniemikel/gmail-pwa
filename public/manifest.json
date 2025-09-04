@@ -45,6 +45,14 @@
       "purpose": "monochrome"
     }
   ],
+  "screenshots": [
+    {
+      "src": "/public/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "label": "Launcher main screen"
+    }
+  ],
   "launch_handler": { "client_mode": "navigate-existing" },
   "protocol_handlers": [
     { "protocol": "mailto", "url": "/public/handler/mailto.html?url=%s" }
@@ -71,5 +79,7 @@
     "method": "GET",
     "params": { "title": "title", "text": "text", "url": "url" }
   },
-  "edge_side_panel": true
+  "edge_side_panel": true,
+  "iarc_rating_id": "PWA-0001",
+  "scope_extensions": []
 }
