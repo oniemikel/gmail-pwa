@@ -7,9 +7,9 @@
     <title>Gmail PWA Launcher</title>
 
     <!-- PWA -->
-    <link rel="manifest" href="/public/manifest.json">
+    <link rel="manifest" href="public/manifest.json">
     <meta name="theme-color" content="#ffffff" />
-    <link rel="icon" href="/public/favicon.ico">
+    <link rel="icon" href="public/favicon.ico">
 
     <!-- iOS (optional but nice) -->
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -57,18 +57,17 @@
 
 <body>
     <div class="wrap">
-        <img src="/public/icons/monochrome.svg" alt="App Icon" width="72" height="72" />
+        <img src="public/icons/monochrome.svg" alt="App Icon" width="72" height="72" />
         <h1>Gmail を起動します…</h1>
         <p class="muted">数秒後に自動で Gmail に移動します。上手くいかない場合は下のボタンを押してください。</p>
         <a id="openGmail" class="btn" href="https://mail.google.com/mail/u/0/#inbox" rel="noopener">Gmail を開く</a>
         <p class="muted" id="installHint"></p>
     </div>
 
-    <script src="/src/main.js" type="module"></script>
+    <script src="main.js" type="module"></script>
     <script>
         // 自動リダイレクト（初回のみ 600ms 後）
         setTimeout(() => {
-            // compose 指定などの将来拡張に備え、クエリを透過
             const url = new URL(window.location.href);
             const action = url.searchParams.get("action");
             let target = "https://mail.google.com/mail/u/0/#inbox";
