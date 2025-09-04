@@ -4,56 +4,71 @@
   "description": "A lightweight PWA launcher that opens Gmail and handles mailto: as default email app.",
   "dir": "ltr",
   "lang": "ja-JP",
-  "start_url": "index.html?source=pwa",
-  "scope": "./",
+  "start_url": "/index.html?source=pwa",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
+  "orientation": "any",
   "categories": ["email", "productivity"],
   "icons": [
     {
-      "src": "public/icons/icon-192.png",
+      "src": "/public/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "public/icons/icon-512.png",
+      "src": "/public/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "public/icons/maskable-192.png",
+      "src": "/public/icons/maskable-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "public/icons/maskable-512.png",
+      "src": "/public/icons/maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "public/icons/monochrome.svg",
+      "src": "/public/icons/monochrome.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "monochrome"
     }
   ],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "screenshots": [
+    {
+      "src": "/public/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "label": "App launcher screen"
+    }
+  ],
   "protocol_handlers": [
     {
       "protocol": "mailto",
-      "url": "public/handler/mailto.html?url=%s"
+      "url": "/public/handler/mailto.html?url=%s"
     }
   ],
   "shortcuts": [
     {
       "name": "Compose",
       "short_name": "Compose",
-      "url": "public/handler/compose.html",
+      "url": "/public/handler/compose.html",
       "description": "Start a new Gmail message quickly."
     }
-  ]
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "iarc_rating_id": ""
 }
