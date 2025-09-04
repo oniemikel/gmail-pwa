@@ -11,19 +11,19 @@ Gmail をシンプルな PWA (Progressive Web App) として利用できるよ�
 gmail-pwa/
 ├─ public/
 │   ├─ handler/
-│   │   ├─ compose.html
-│   │   └─ mailto.html
-│   ├─ icons/        # アイコン格納
+│   │   ├─ compose.html      # Gmail 作成画面へのリンク
+│   │   └─ mailto.html       # mailto リンクハンドラ
+│   ├─ icons/                # アイコン格納
 │   │   ├─ icon-192.png
 │   │   ├─ icon-512.png
 │   │   ├─ maskable-192.png
 │   │   ├─ maskable-512.png
 │   │   └─ monochrome.svg
-│   ├─ manifest.json
-│   └─ offline.html
-├─ index.html        # Gmail リダイレクト
-├─ main.js           # Service Worker 登録
-├─ service-worker.js
+│   ├─ manifest.json         # Web App Manifest
+│   └─ offline.html          # オフライン用ページ
+├─ index.html                # Gmail リダイレクトページ
+├─ main.js                   # Service Worker 登録
+├─ service-worker.js         # オフライン対応 SW
 ├─ LICENSE
 └─ README.md
 ```
