@@ -30,14 +30,14 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch
+// Fetch: ネットワーク優先、オフラインはキャッシュにフォールバック
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   const isSameOrigin = new URL(request.url).origin === self.location.origin;
 
   if (request.mode === "navigate" && isSameOrigin) {
     event.respondWith(
-      fetch(request).catch(() => caches.match("public/offline.html"))
+      fetch(request).catch(() => caches.match("/offline.html"))
     );
     return;
   }
@@ -55,8 +55,50 @@ self.addEventListener("fetch", (event) => {
                 .then((cache) => cache.put(request, resClone));
               return res;
             })
-            .catch(() => caches.match("public/offline.html"))
+            .catch(() => caches.match("/offline.html"))
       )
     );
   }
+});
+
+// Background Sync: ネット復帰時に保留アクションを同期
+self.addEventListener("sync", (event) => {
+  if (event.tag === "sync-actions") {
+    event.waitUntil(
+      self.clients
+        .matchAll()
+        .then((clients) =>
+          clients.forEach((client) =>
+            client.postMessage({ type: "SYNC_PENDING_ACTIONS" })
+          )
+        )
+    );
+  }
+});
+
+// Push通知受信
+self.addEventListener("push", (event) => {
+  const data = event.data ? event.data.json() : {};
+  event.waitUntil(
+    self.registration.showNotification(data.title || "Gmail PWA", {
+      body: data.body || "You have a new message.",
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      data: data.url || "https://mail.google.com",
+    })
+  );
+});
+
+// 通知クリック時の挙動
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data;
+  event.waitUntil(
+    clients.matchAll({ type: "window" }).then((windowClients) => {
+      for (const client of windowClients) {
+        if (client.url === url && "focus" in client) return client.focus();
+      }
+      if (clients.openWindow) return clients.openWindow(url);
+    })
+  );
 });
