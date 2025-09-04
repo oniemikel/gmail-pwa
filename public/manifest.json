@@ -5,8 +5,8 @@
   "description": "A lightweight PWA launcher that opens Gmail and handles mailto: as default email app.",
   "dir": "ltr",
   "lang": "ja-JP",
-  "start_url": "index.html?source=pwa",
-  "scope": "./",
+  "start_url": "../index.html?source=pwa",
+  "scope": "../",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
@@ -58,14 +58,14 @@
   "protocol_handlers": [
     {
       "protocol": "mailto",
-      "url": "/handler/mailto.html?url=%s"
+      "url": "handler/mailto.html?url=%s"
     }
   ],
   "shortcuts": [
     {
       "name": "Compose",
       "short_name": "Compose",
-      "url": "/handler/compose.html",
+      "url": "handler/compose.html",
       "description": "Start a new Gmail message quickly."
     }
   ],
