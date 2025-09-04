@@ -69,5 +69,17 @@
       "description": "Start a new Gmail message quickly."
     }
   ],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+
+  "scope_extensions": [
+    {
+      "origin": "."
+    }
+  ],
+
+  "iarc_rating_id": "e10+",
+
+  "background_sync": true,
+  "periodic_sync": true,
+  "push_notifications": true
 }
