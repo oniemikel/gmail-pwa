@@ -1,7 +1,7 @@
 # Gmail PWA
 
-Gmail をシンプルな PWA (Progressive Web App) として利用できるようにしたラッパーアプリケーションです。  
-このプロジェクトは、PWABuilder を通して Windows 向けの **MSIX パッケージ** を生成し、既定のメールアプリとして設定できることを目的としています。  
+Gmail をシンプルな **PWA (Progressive Web App)** として利用できるラッパーアプリケーションです。  
+このプロジェクトは PWABuilder を通して Windows 向け **MSIX パッケージ** を生成し、既定のメールアプリとして設定できることを目的としています。
 
 ---
 
@@ -10,85 +10,60 @@ Gmail をシンプルな PWA (Progressive Web App) として利用できるよ�
 ```
 gmail-pwa/
 ├─ public/
-│   ├─ favicon.ico
-│   ├─ manifest.json
-│   └─ icons/        # アイコン格納
-├─ src/
-│   ├─ index.html    # Gmail リダイレクト
-│   ├─ main.js       # Service Worker 登録
-│   └─ service-worker.js
-├─ package.json
+│   ├─ handler/
+│   │   ├─ compose.html      # Gmail 作成画面へのリンク
+│   │   └─ mailto.html       # mailto リンクハンドラ
+│   ├─ icons/                # アイコン格納
+│   │   ├─ icon-192.png
+│   │   ├─ icon-512.png
+│   │   ├─ maskable-192.png
+│   │   ├─ maskable-512.png
+│   │   └─ monochrome.svg
+│   ├─ manifest.json         # Web App Manifest
+│   └─ offline.html          # オフライン用ページ
+├─ index.html                # Gmail リダイレクトページ
+├─ main.js                   # Service Worker 登録
+├─ service-worker.js         # オフライン対応 SW
+├─ LICENSE
 └─ README.md
 ```
 
 ---
 
-## 🚀 セットアップ
-
-### 1. リポジトリのクローン
-```bash
-git clone https://github.com/your-username/gmail-pwa.git
-cd gmail-pwa
-```
-
-### 2. 依存関係のインストール
-本プロジェクトはビルドステップ不要のシンプル構成ですが、将来の拡張用に `package.json` を含めています。  
-必要であればローカルサーバをインストールしてください。
-
-例:  
-```bash
-npm install -g serve
-```
-
-### 3. 開発サーバの起動
-```bash
-serve -s public
-```
-
-ブラウザで以下にアクセスしてください:  
-```
-http://localhost:3000
-```
-
----
-
-## 🛠 PWABuilder でのビルド
+## 🛠 PWABuilder でのパッケージ化
 
 1. [PWABuilder](https://www.pwabuilder.com/) にアクセス  
-2. デプロイ済みの `manifest.json` の URL を入力  
+2. `manifest.json` の URL を入力  
    - 例: `https://yourdomain.com/manifest.json`
 3. 「Generate」から **Windows (MSIX)** を選択  
-4. ダウンロードしたパッケージをインストール  
+4. ダウンロードしたパッケージをインストール
 
 ---
 
-## 📧 既定のアプリとして設定
+## 📧 既定のメールアプリとして設定
 
 1. Windows 設定を開く  
 2. **アプリ > 既定のアプリ** に移動  
 3. **メール** の項目を選択し、この Gmail PWA を指定  
 
-これで Gmail PWA が Windows の既定メールアプリとして利用可能です。  
-
 ---
 
 ## 📄 使用技術
 
-- **Manifest v3** 準拠の Web App Manifest  
+- **Web App Manifest** による PWA 準拠  
 - **Service Worker** によるオフライン対応  
-- **PWABuilder** を用いたクロスプラットフォーム配布  
+- **PWABuilder** を用いた Windows 向け MSIX 配布  
 
 ---
 
 ## ⚠️ 注意事項
 
-- 本アプリは **Gmail 本体のコピーではなく、公式 Gmail へのラッパー** です。  
+- 本アプリは **公式 Gmail へのラッパー** であり、Gmail 本体ではありません。  
 - Gmail は Google LLC の商標です。  
-- 本リポジトリは MIT ライセンスの下で公開されています。  
+- 本リポジトリは MIT ライセンスの下で公開されています。
 
 ---
 
 ## 📜 ライセンス
 
-このリポジトリは **MIT License** の下で公開されています。  
 詳細は [LICENSE](./LICENSE) を参照してください。
