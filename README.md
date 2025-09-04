@@ -9,50 +9,108 @@ Gmail をシンプルな PWA (Progressive Web App) として利用できるよ�
 
 ```
 gmail-pwa/
-├─ public/
-│   ├─ handler/
-│   │   ├─ compose.html      # Gmail 作成画面へのリンク
-│   │   └─ mailto.html       # mailto リンクハンドラ
-│   ├─ icons/                # アイコン格納
+├─ public/                  # 公開リソース用ディレクトリ
+│   ├─ handler/             # mailto リンクなどの HTML ハンドラ
+│   │   ├─ compose.html     # メール作成画面へのリダイレクト
+│   │   └─ mailto.html      # mailto ハンドリング用ページ
+│   ├─ icons/               # PWA 用アイコン
 │   │   ├─ icon-192.png
 │   │   ├─ icon-512.png
 │   │   ├─ maskable-192.png
 │   │   ├─ maskable-512.png
 │   │   └─ monochrome.svg
-│   ├─ manifest.json         # Web App Manifest
-│   └─ offline.html          # オフライン用ページ
-├─ index.html                # Gmail リダイレクトページ
-├─ main.js                   # Service Worker 登録
-├─ service-worker.js         # オフライン対応 SW
-├─ LICENSE
-└─ README.md
+│   ├─ manifest.json        # Web App Manifest
+│   └─ offline.html         # オフライン表示用ページ
+├─ index.html               # PWA 起動・Gmail へのリダイレクト
+├─ main.js                  # Service Worker 登録スクリプト
+├─ service-worker.js        # オフライン対応 Service Worker
+├─ README.md                # この説明書
+├─ LICENSE                  # MIT ライセンス
+└─ tree.txt                 # ディレクトリツリーの記録
 ```
 
 ---
 
-## 🚀 セットアップ
+## 🚀 インストールと利用
 
-1. ZIP で配布している署名済み MSIX パッケージをダウンロード  
-2. Windows でインストール  
-   > インストールには **signtool.exe** または PowerShell での署名済みパッケージが必要です  
-3. インストール後、既定のメールアプリとして設定  
+1. Windows 上で署名済みの MSIX パッケージをダウンロード  
+   - 提供済みのパッケージは署名済みなので、そのままインストール可能です
+2. ダウンロードしたパッケージをダブルクリック、または PowerShell で以下のようにインストールします：
+
+```powershell
+Add-AppxPackage -Path "Gmail PWA.sideload.msix"
+```
+
+3. Windows の設定で Gmail PWA を既定のメールアプリとして設定できます：
+   - 設定 > アプリ > 既定のアプリ > メール で選択
 
 ---
 
-## 📧 既定のアプリとして設定
+## 🛠 PWABuilder でのパッケージ生成（参考）
 
-1. Windows 設定を開く  
-2. **アプリ > 既定のアプリ** に移動  
-3. **メール** の項目を選択し、Gmail PWA を指定  
-   または、**mailto**の項目に Gmail PWA を指定
+将来的に自身でパッケージを生成したい場合や、他のプラットフォーム向けビルドの参考として：
+
+1. [PWABuilder](https://www.pwabuilder.com/) にアクセス  
+2. デプロイ済みの `manifest.json` の URL を入力  
+   - 例: `https://yourdomain.com/manifest.json`
+3. 「Generate」から **Windows (MSIX)** など希望のプラットフォームを選択  
+4. 署名済みパッケージを取得して配布することも可能  
+   - 本リポジトリでは **既に署名済みパッケージを提供しています**
+
+> ⚠️ 注意  
+> - MSIX を自分で生成する場合、署名が必要です。署名なしでは Windows にインストールできません。  
+> - signtool.exe を使用して署名する必要があります（Windows 10 SDK に含まれます）。  
+> - 自己署名証明書を利用する場合、Windows に「信頼済み」として登録する必要があります。
+
+---
+
+## 🔏 自分で署名したい場合（任意）
+
+通常は不要ですが、独自署名を行いたい場合は以下の手順を参考にしてください。
+
+### 1. 必要なツール
+
+- [Windows 10 SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/)  
+  - signtool.exe が含まれます
+
+### 2. 証明書の作成（自己署名）
+
+PowerShell で自己署名証明書を作成します：
+
+```powershell
+$pwd = ConvertTo-SecureString -String "YourPasswordHere" -Force -AsPlainText
+$cert = New-SelfSignedCertificate -Type Custom -Subject "CN=Gmail PWA" `
+    -CertStoreLocation "Cert:\CurrentUser\My" -KeyExportPolicy Exportable -KeySpec Signature
+Export-PfxCertificate -Cert "Cert:\CurrentUser\My\$($cert.Thumbprint)" `
+    -FilePath "C:\GmailPWA\GmailPWA.pfx" -Password $pwd
+```
+
+### 3. MSIX パッケージへの署名
+
+PowerShell またはコマンドプロンプトで signtool を使って署名します：
+
+```powershell
+signtool sign /fd SHA256 /a /f "C:\GmailPWA\GmailPWA.pfx" /p YourPasswordHere "Gmail PWA.sideload.msix"
+```
+
+### 4. インストール
+
+```powershell
+Add-AppxPackage -Path "Gmail PWA.sideload.msix"
+```
+
+> ⚠️ 注意  
+> - 自己署名証明書は Windows に「信頼済み」として登録されていない場合、インストール時に警告が出ます。  
+> - 提供済みの署名済みパッケージを利用すれば、この手順はほとんどのユーザーで不要です。
 
 ---
 
 ## 📄 使用技術
 
-- **Manifest v3** 準拠の Web App Manifest  
+- **Web App Manifest v3** 準拠  
 - **Service Worker** によるオフライン対応  
-- **PWABuilder** を用いたクロスプラットフォーム配布  
+- **PWABuilder** によるクロスプラットフォーム配布  
+- **Windows MSIX / Sideload** による PWA 配布
 
 ---
 
@@ -60,7 +118,7 @@ gmail-pwa/
 
 - 本アプリは **Gmail 本体のコピーではなく、公式 Gmail へのラッパー** です。  
 - Gmail は Google LLC の商標です。  
-- 本リポジトリは MIT ライセンスの下で公開されています。  
+- 本リポジトリは MIT ライセンスの下で公開されています。
 
 ---
 
