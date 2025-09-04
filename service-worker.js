@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-globals */
 const CACHE_NAME = "gmail-pwa-shell-v1";
 const APP_SHELL = [
-  "public/manifest.json",
-  "index.html",
-  "main.js",
-  "public/offline.html",
-  "public/icons/monochrome.svg",
+  "/manifest.json",
+  "/index.html",
+  "/main.js",
+  "/offline.html",
+  "/icons/monochrome.svg",
 ];
 
 // Install
