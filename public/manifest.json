@@ -5,81 +5,71 @@
   "description": "A lightweight PWA launcher that opens Gmail and handles mailto: as default email app.",
   "dir": "ltr",
   "lang": "ja-JP",
-  "start_url": "../index.html?source=pwa",
-  "scope": "../",
+  "start_url": "/index.html?source=pwa",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "orientation": "any",
   "categories": ["email", "productivity"],
   "icons": [
     {
-      "src": "icons/icon-192.png",
+      "src": "/public/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/icon-512.png",
+      "src": "/public/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "icons/maskable-192.png",
+      "src": "/public/icons/maskable-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "icons/maskable-512.png",
+      "src": "/public/icons/maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "icons/monochrome.svg",
+      "src": "/public/icons/monochrome.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "monochrome"
     }
   ],
-  "launch_handler": {
-    "client_mode": "navigate-existing"
-  },
-  "screenshots": [
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "label": "App launcher screen"
-    }
-  ],
+  "launch_handler": { "client_mode": "navigate-existing" },
   "protocol_handlers": [
-    {
-      "protocol": "mailto",
-      "url": "handler/mailto.html?url=%s"
-    }
+    { "protocol": "mailto", "url": "/public/handler/mailto.html?url=%s" }
   ],
   "shortcuts": [
     {
       "name": "Compose",
       "short_name": "Compose",
-      "url": "handler/compose.html",
+      "url": "/public/handler/compose.html",
       "description": "Start a new Gmail message quickly."
     }
   ],
-  "prefer_related_applications": false,
-
-  "scope_extensions": [
+  "related_applications": [
     {
-      "origin": "."
+      "platform": "windows",
+      "url": "https://www.microsoft.com/store/productId/9wzdncrfhvqm",
+      "id": "9wzdncrfhvqm"
     }
   ],
-
-  "iarc_rating_id": "e10+",
-
-  "background_sync": true,
-  "periodic_sync": true,
-  "push_notifications": true
+  "prefer_related_applications": true,
+  "handle_links": "preferred",
+  "share_target": {
+    "action": "/index.html",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  },
+  "edge_side_panel": true
 }
