@@ -34,7 +34,7 @@ gmail-pwa/
 
 1. ZIP で配布している署名済み MSIX パッケージをダウンロード  
 2. Windows でインストール  
-   - インストールには **signtool.exe** または PowerShell での署名済みパッケージが必要です  
+   > インストールには **signtool.exe** または PowerShell での署名済みパッケージが必要です  
 3. インストール後、既定のメールアプリとして設定  
 
 ---
@@ -44,6 +44,7 @@ gmail-pwa/
 1. Windows 設定を開く  
 2. **アプリ > 既定のアプリ** に移動  
 3. **メール** の項目を選択し、Gmail PWA を指定  
+   または、**mailto**の項目に Gmail PWA を指定
 
 ---
 
