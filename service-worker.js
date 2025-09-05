@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = "gmail-pwa-shell-v2";
+
+const CACHE_NAME = "gmail-pwa-shell-v1";
 const APP_SHELL = [
   "/manifest.json",
   "/index.html",
@@ -8,91 +9,80 @@ const APP_SHELL = [
   "/icons/monochrome.svg",
 ];
 
-// Install
+// Install: アプリシェルをキャッシュ
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
+    caches.open(CACHE_NAME).then((cache) => {
+      console.log("[SW] Caching app shell...");
+      return cache.addAll(APP_SHELL);
+    })
   );
   self.skipWaiting();
 });
 
-// Activate
+// Activate: 古いキャッシュを削除
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
       .then((keys) =>
         Promise.all(
-          keys.map((k) => (k === CACHE_NAME ? null : caches.delete(k)))
+          keys.map((key) => (key !== CACHE_NAME ? caches.delete(key) : null))
         )
       )
   );
   self.clients.claim();
 });
 
-// Fetch: ネットワーク優先、オフラインはキャッシュにフォールバック
+// Fetch: キャッシュ優先、オフラインは offline.html
 self.addEventListener("fetch", (event) => {
   const { request } = event;
-  const isSameOrigin = new URL(request.url).origin === self.location.origin;
 
-  if (request.mode === "navigate" && isSameOrigin) {
+  // ナビゲーション（HTMLページ）の場合
+  if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request).catch(() => caches.match("/offline.html"))
+      caches.match(request).then((cached) => {
+        return (
+          cached || fetch(request).catch(() => caches.match("/offline.html"))
+        );
+      })
     );
     return;
   }
 
-  if (isSameOrigin) {
+  // 同一オリジンのアセットはキャッシュ優先
+  if (new URL(request.url).origin === self.location.origin) {
     event.respondWith(
-      caches.match(request).then(
-        (cached) =>
-          cached ||
-          fetch(request)
-            .then((res) => {
-              const resClone = res.clone();
-              caches
-                .open(CACHE_NAME)
-                .then((cache) => cache.put(request, resClone));
-              return res;
-            })
-            .catch(() => caches.match("/offline.html"))
-      )
+      caches.match(request).then((cached) => {
+        if (cached) return cached;
+        return fetch(request)
+          .then((res) => {
+            const resClone = res.clone();
+            caches
+              .open(CACHE_NAME)
+              .then((cache) => cache.put(request, resClone));
+            return res;
+          })
+          .catch(() => caches.match("/offline.html"));
+      })
     );
   }
 });
 
-// Background Sync: ネット復帰時に保留アクションを同期
+// Background Sync
 self.addEventListener("sync", (event) => {
   if (event.tag === "sync-actions") {
     event.waitUntil(
-      self.clients
-        .matchAll()
-        .then((clients) =>
-          clients.forEach((client) =>
-            client.postMessage({ type: "SYNC_PENDING_ACTIONS" })
-          )
-        )
+      self.clients.matchAll().then((clients) => {
+        clients.forEach((client) =>
+          client.postMessage({ type: "SYNC_PENDING_ACTIONS" })
+        );
+      })
     );
   }
 });
 
-// Periodic Background Sync: 定期的にデータ取得
-self.addEventListener("periodicsync", (event) => {
-  if (event.tag === "periodic-fetch-gmail") {
-    event.waitUntil(
-      fetch("https://mail.google.com")
-        .then((res) => {
-          console.log("[Periodic Sync] Gmail fetched:", res.status);
-          return res;
-        })
-        .catch((err) => {
-          console.warn("[Periodic Sync] fetch failed", err);
-        })
-    );
-  }
-});
-
-// Push通知受信
+// Push通知
 self.addEventListener("push", (event) => {
   const data = event.data ? event.data.json() : {};
   event.waitUntil(
@@ -105,7 +95,7 @@ self.addEventListener("push", (event) => {
   );
 });
 
-// 通知クリック時の挙動
+// 通知クリック
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   const url = event.notification.data;
