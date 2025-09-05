@@ -7,8 +7,8 @@
   "lang": "ja-JP",
   "start_url": "/index.html?source=pwa",
   "scope": "/",
-  "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
+  "display": "minimal-ui",
+  "display_override": ["window-controls-overlay", "browser"],
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
   "orientation": "any",
@@ -53,9 +53,14 @@
       "label": "Launcher main screen"
     }
   ],
-  "launch_handler": { "client_mode": "navigate-existing" },
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "protocol_handlers": [
-    { "protocol": "mailto", "url": "./handler/mailto.html?url=%s" }
+    {
+      "protocol": "mailto",
+      "url": "./handler/mailto.html?url=%s"
+    }
   ],
   "shortcuts": [
     {
@@ -77,9 +82,12 @@
   "share_target": {
     "action": "../index.html",
     "method": "GET",
-    "params": { "title": "title", "text": "text", "url": "url" }
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
   },
   "edge_side_panel": true,
-  "iarc_rating_id": "PWA-0001",
-  "scope_extensions": []
+  "iarc_rating_id": "PWA-0001"
 }
