@@ -22,7 +22,7 @@ if ("serviceWorker" in navigator) {
         try {
           const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: "<Base64VAPID公開鍵をここに>",
+            applicationServerKey: "<Base64VAPID公開鍵をここに>", // 
           });
           console.log("Push subscribed:", subscription);
         } catch (err) {
