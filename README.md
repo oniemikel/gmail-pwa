@@ -12,6 +12,7 @@ gmail-pwa/
 ├─ public/                  # 公開リソース用ディレクトリ
 │   ├─ handler/             # mailto リンクなどの HTML ハンドラ
 │   │   ├─ compose.html     # メール作成画面へのリダイレクト
+│   │   ├─ mailto-handler.js
 │   │   └─ mailto.html      # mailto ハンドリング用ページ
 │   ├─ icons/               # PWA 用アイコン
 │   │   ├─ icon-192.png
@@ -19,8 +20,8 @@ gmail-pwa/
 │   │   ├─ maskable-192.png
 │   │   ├─ maskable-512.png
 │   │   └─ monochrome.svg
-│   ├─ manifest.json        # Web App Manifest
-│   └─ offline.html         # オフライン表示用ページ
+│   └─ manifest.json        # Web App Manifest
+├─ offline.html             # オフライン表示用ページ
 ├─ index.html               # PWA 起動・Gmail へのリダイレクト
 ├─ main.js                  # Service Worker 登録スクリプト
 ├─ service-worker.js        # オフライン対応 Service Worker
