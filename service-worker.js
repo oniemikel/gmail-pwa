@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-const CACHE_NAME = "gmail-pwa-shell-v1";
+const CACHE_NAME = "gmail-pwa-shell-v2";
 const APP_SHELL = [
   "/manifest.json",
   "/index.html",
@@ -72,6 +72,22 @@ self.addEventListener("sync", (event) => {
             client.postMessage({ type: "SYNC_PENDING_ACTIONS" })
           )
         )
+    );
+  }
+});
+
+// Periodic Background Sync: 定期的にデータ取得
+self.addEventListener("periodicsync", (event) => {
+  if (event.tag === "periodic-fetch-gmail") {
+    event.waitUntil(
+      fetch("https://mail.google.com")
+        .then((res) => {
+          console.log("[Periodic Sync] Gmail fetched:", res.status);
+          return res;
+        })
+        .catch((err) => {
+          console.warn("[Periodic Sync] fetch failed", err);
+        })
     );
   }
 });
