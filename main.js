@@ -1,11 +1,34 @@
 // Service Worker 登録
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", async () => {
-    try {
-      const registration = await navigator.serviceWorker.register(
-        "/gmail-pwa/service-worker.js" // 修正済み
-      );
+  navigator.serviceWorker
+    .register("/gmail-pwa/service-worker.js")
+    .then((registration) => {
       console.log("Service Worker registered:", registration);
+
+      // updatefound: 新しいSWがインストールされるとき
+      registration.addEventListener("updatefound", () => {
+        const installingWorker = registration.installing;
+        console.log(
+          "A new service worker is being installed:",
+          installingWorker
+        );
+
+        if (installingWorker) {
+          installingWorker.onstatechange = () => {
+            console.log(
+              "Service Worker state changed:",
+              installingWorker.state
+            );
+            if (installingWorker.state === "installed") {
+              if (navigator.serviceWorker.controller) {
+                console.log("New content available; please refresh.");
+              } else {
+                console.log("Content cached for offline use.");
+              }
+            }
+          };
+        }
+      });
 
       // Background Sync登録例
       if ("sync" in registration) {
@@ -19,32 +42,32 @@ if ("serviceWorker" in navigator) {
 
       // Push通知の購読処理
       if ("PushManager" in window) {
-        try {
-          const subscription = await registration.pushManager.subscribe({
+        registration.pushManager
+          .subscribe({
             userVisibleOnly: true,
-            applicationServerKey: "Base64VAPID公開鍵", // 適宜置換する（使用しないが）
-          });
-          console.log("Push subscribed:", subscription);
-        } catch (err) {
-          console.warn("Push subscription failed:", err);
-        }
+            applicationServerKey: "<Base64VAPID公開鍵をここに>", // 適宜置換
+          })
+          .then((subscription) => console.log("Push subscribed:", subscription))
+          .catch((err) => console.warn("Push subscription failed:", err));
       }
 
       // Periodic Sync登録（対応ブラウザ限定）
       if ("periodicSync" in registration) {
-        try {
-          await registration.periodicSync.register("get-latest-mails", {
+        registration.periodicSync
+          .register("get-latest-mails", {
             minInterval: 24 * 60 * 60 * 1000, // 1日
-          });
-          console.log("Periodic Sync registered: get-latest-mails");
-        } catch (err) {
-          console.warn("Periodic Sync registration failed:", err);
-        }
+          })
+          .then(() => console.log("Periodic Sync registered: get-latest-mails"))
+          .catch((err) =>
+            console.warn("Periodic Sync registration failed:", err)
+          );
       }
-    } catch (err) {
-      console.error("Service Worker registration failed:", err);
-    }
-  });
+    })
+    .catch((error) => {
+      console.error(`Service Worker registration failed: ${error}`);
+    });
+} else {
+  console.error("Service workers are not supported.");
 }
 
 // mailto: のハンドラ登録
@@ -53,7 +76,7 @@ if ("serviceWorker" in navigator) {
     if ("registerProtocolHandler" in navigator) {
       navigator.registerProtocolHandler(
         "mailto",
-        "/gmail-pwa/handler/mailto.html?url=%s", // 修正済み
+        "/gmail-pwa/handler/mailto.html?url=%s", // GitHub Pages用パス
         "Gmail PWA Launcher"
       );
     }
@@ -66,8 +89,10 @@ if ("serviceWorker" in navigator) {
 const hint = document.getElementById("installHint");
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
-  hint.textContent =
-    "このアプリは PWA としてインストールできます。ブラウザのメニューから『アプリとしてインストール』を選択してください。";
+  if (hint) {
+    hint.textContent =
+      "このアプリは PWA としてインストールできます。ブラウザのメニューから『アプリとしてインストール』を選択してください。";
+  }
 });
 
 // 通知権限のリクエスト
