@@ -3,7 +3,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
       const registration = await navigator.serviceWorker.register(
-        "public/service-worker.js"
+        "/gmail-pwa/service-worker.js"
       );
       console.log("Service Worker registered:", registration);
 
