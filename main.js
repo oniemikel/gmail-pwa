@@ -9,11 +9,36 @@ if ("serviceWorker" in navigator) {
 
       // Background Sync登録例
       if ("sync" in registration) {
+        registration.sync
+          .register("sync-actions")
+          .then(() => console.log("Background Sync registered: sync-actions"))
+          .catch((err) =>
+            console.warn("Background Sync registration failed:", err)
+          );
+      }
+
+      // Push通知の購読処理
+      if ("PushManager" in window) {
         try {
-          await registration.sync.register("sync-actions");
-          console.log("Background Sync registered: sync-actions");
+          const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: "<Base64VAPID公開鍵をここに>",
+          });
+          console.log("Push subscribed:", subscription);
         } catch (err) {
-          console.warn("Background Sync registration failed:", err);
+          console.warn("Push subscription failed:", err);
+        }
+      }
+
+      // Periodic Sync登録（対応ブラウザ限定）
+      if ("periodicSync" in registration) {
+        try {
+          await registration.periodicSync.register("get-latest-mails", {
+            minInterval: 24 * 60 * 60 * 1000,
+          });
+          console.log("Periodic Sync registered: get-latest-mails");
+        } catch (err) {
+          console.warn("Periodic Sync registration failed:", err);
         }
       }
     } catch (err) {
@@ -45,7 +70,7 @@ window.addEventListener("beforeinstallprompt", (e) => {
     "このアプリは PWA としてインストールできます。ブラウザのメニューから『アプリとしてインストール』を選択してください。";
 });
 
-// プッシュ通知の許可を要求
+// 通知権限のリクエスト
 if ("Notification" in window && Notification.permission !== "granted") {
   Notification.requestPermission().then((permission) => {
     if (permission === "granted") {
