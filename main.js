@@ -3,7 +3,7 @@ if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
     try {
       const registration = await navigator.serviceWorker.register(
-        "/gmail-pwa/service-worker.js"
+        "/gmail-pwa/service-worker.js" // 修正済み
       );
       console.log("Service Worker registered:", registration);
 
@@ -22,7 +22,7 @@ if ("serviceWorker" in navigator) {
         try {
           const subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
-            applicationServerKey: "<Base64VAPID公開鍵をここに>", // 
+            applicationServerKey: "Base64VAPID公開鍵", // 適宜置換する（使用しないが）
           });
           console.log("Push subscribed:", subscription);
         } catch (err) {
@@ -34,7 +34,7 @@ if ("serviceWorker" in navigator) {
       if ("periodicSync" in registration) {
         try {
           await registration.periodicSync.register("get-latest-mails", {
-            minInterval: 24 * 60 * 60 * 1000,
+            minInterval: 24 * 60 * 60 * 1000, // 1日
           });
           console.log("Periodic Sync registered: get-latest-mails");
         } catch (err) {
@@ -53,7 +53,7 @@ if ("serviceWorker" in navigator) {
     if ("registerProtocolHandler" in navigator) {
       navigator.registerProtocolHandler(
         "mailto",
-        "public/handler/mailto.html?url=%s",
+        "/gmail-pwa/handler/mailto.html?url=%s", // 修正済み
         "Gmail PWA Launcher"
       );
     }
