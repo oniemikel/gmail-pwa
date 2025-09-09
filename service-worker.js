@@ -1,12 +1,16 @@
 /* eslint-disable no-restricted-globals */
 
 const CACHE_NAME = "gmail-pwa-shell-v1";
+// パスをGitHub Pagesのサブディレクトリ構成に合わせて修正
 const APP_SHELL = [
-  "/manifest.json",
-  "/index.html",
-  "/main.js",
-  "/offline.html",
-  "/icons/monochrome.svg",
+  "/gmail-pwa/public/manifest.json",
+  "/gmail-pwa/index.html",
+  "/gmail-pwa/main.js",
+  "/gmail-pwa/offline.html",
+  "/gmail-pwa/icons/monochrome.svg",
+  // 他のアセットも追加
+  "/gmail-pwa/style.css",
+  "/gmail-pwa/favicon.ico",
 ];
 
 // Install: アプリシェルをキャッシュ
@@ -43,7 +47,8 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.match(request).then((cached) => {
         return (
-          cached || fetch(request).catch(() => caches.match("/offline.html"))
+          cached ||
+          fetch(request).catch(() => caches.match("/gmail-pwa/offline.html"))
         );
       })
     );
@@ -63,7 +68,7 @@ self.addEventListener("fetch", (event) => {
               .then((cache) => cache.put(request, resClone));
             return res;
           })
-          .catch(() => caches.match("/offline.html"));
+          .catch(() => caches.match("/gmail-pwa/offline.html"));
       })
     );
   }
@@ -88,8 +93,9 @@ self.addEventListener("push", (event) => {
   event.waitUntil(
     self.registration.showNotification(data.title || "Gmail PWA", {
       body: data.body || "You have a new message.",
-      icon: "/icons/icon-192.png",
-      badge: "/icons/icon-192.png",
+      // アイコンパスも修正
+      icon: "/gmail-pwa/icons/icon-192.png",
+      badge: "/gmail-pwa/icons/icon-192.png",
       data: data.url || "https://mail.google.com",
     })
   );
