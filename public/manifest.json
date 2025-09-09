@@ -59,14 +59,14 @@
   "protocol_handlers": [
     {
       "protocol": "mailto",
-      "url": "/gmail-pwa/handler/mailto.html?url=%s"
+      "url": "/gmail-pwa/public/handler/mailto.html?url=%s"
     }
   ],
   "shortcuts": [
     {
       "name": "Compose",
       "short_name": "Compose",
-      "url": "./handler/compose.html",
+      "url": "/gmail-pwa/public/handler/compose.html",
       "description": "Start a new Gmail message quickly."
     }
   ],
