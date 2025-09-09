@@ -1,11 +1,31 @@
 # Gmail PWA
 
 Gmail をシンプルな PWA (Progressive Web App) として利用できるラッパーアプリケーションです。  
-このプロジェクトは、PWABuilder を通して Windows 向けの **署名済み MSIX パッケージ** を提供し、既定のメールアプリとして設定できることを目的としています。
+Windows 上で Gmail を既定のメールアプリとして使いたい場合に便利です。
 
 ---
 
-## 📦 プロジェクト構造
+## 🎯 推奨（一般ユーザー向け）導入方法
+
+もっとも簡単で安全な方法です。URL を開いて、表示される「アプリとしてインストール」ボタンをクリックするだけで導入できます。
+
+1. 以下のリンクをクリックして Gmail PWA を開く  
+   [Gmail PWA を開く](https://oniemikel.github.io/gmail-pwa/)
+2. ブラウザのインストール案内に従い「アプリとしてインストール」を選択
+3. Windows の設定で Gmail PWA を既定のメールアプリとして設定  
+   - 「設定」 > 「アプリ」 > 「既定のアプリ」  
+   - 「mailto」リンクの規定アプリとして Gmail PWA を選択
+
+> ✅ この方法なら署名やコマンド操作は不要です
+
+---
+
+## 🛠 上級者向け（カスタム MSIX パッケージ生成・署名）
+
+開発者や自己署名パッケージを扱いたい方向けの方法です。  
+PWABuilder や signtool/MSIX Packaging Tool を利用して、独自の MSIX パッケージを作成・署名できます。
+
+### 📦 プロジェクト構造（参考）
 
 ```
 gmail-pwa/
@@ -29,102 +49,35 @@ gmail-pwa/
 └─ LICENSE                  # MIT ライセンス
 ```
 
----
+### 手順の概要
 
-## 🚀 インストールと利用
+1. **PWABuilder で MSIX を生成**  
+   - `manifest.json` の URL を指定して Windows 向けパッケージを生成
+2. **署名方法を選択**
+   - **自己署名（signtool.exe / PowerShell）**  
+     - 開発用や個人利用向け  
+     ```powershell
+     $pwd = ConvertTo-SecureString -String "YourPasswordHere" -Force -AsPlainText
+     $cert = New-SelfSignedCertificate -Type Custom -Subject "CN=Gmail PWA" `
+         -CertStoreLocation "Cert:\CurrentUser\My" -KeyExportPolicy Exportable -KeySpec Signature
+     Export-PfxCertificate -Cert "Cert:\CurrentUser\My\$($cert.Thumbprint)" `
+         -FilePath "C:\GmailPWA\GmailPWA.pfx" -Password $pwd
 
-1. Windows 上で署名済みの MSIX パッケージをダウンロード  
-   - 本リポジトリの [Release ページ](https://github.com/oniemikel/gmail-pwa/releases) で提供済みの署名済みパッケージを入手可能です
-2. ダウンロードしたパッケージをダブルクリック、または PowerShell で以下を実行：
-
-```powershell
-Add-AppxPackage -Path "Gmail PWA.sideload.msix"
-```
-
-3. Windows の設定で Gmail PWA を既定のメールアプリとして設定：
-
-- 「設定」を開く  
-- 「アプリ」 > 「既定のアプリ」を選択  
-- 下の方にある「リンクの種類で規定値を選択する」をクリック  
-- 「mailto」項目で Gmail PWA を選択
-
----
-
-## 🛠 MSIX パッケージの生成・署名（参考）
-
-将来的に自身で MSIX パッケージを生成したい場合や、他のプラットフォーム向けビルドの参考として：
-
-1. [PWABuilder](https://www.pwabuilder.com/) にアクセス  
-2. デプロイ済みの `manifest.json` の URL を入力  
-   - 例: `https://yourdomain.com/manifest.json`
-3. 「Generate」から希望のプラットフォーム（Windows/MSIXなど）を選択  
-4. 以下の方法で署名します
-
----
-
-### **署名方法 1: signtool.exe を使用する（自己署名・開発用）**
+     signtool sign /fd SHA256 /a /f "C:\GmailPWA\GmailPWA.pfx" /p YourPasswordHere "Gmail PWA.sideload.msix"
+     ```
+   - **MSIX Packaging Tool（GUI）**  
+     - 独自署名付きで MSIX を生成可能
+   - **Microsoft Store 配布用署名**  
+     - 公式署名付きで第三者配布可能
+3. **署名済み MSIX をインストール**  
+   ```powershell
+   Add-AppxPackage -Path "Gmail PWA.sideload.msix"
+   ```
+4. Windows の既定メールアプリに設定（mailto リンク用）
 
 > ⚠️ 注意  
-> - 第三者の認証はありません。**自己責任**で使用してください  
-> - <u>**PFX は絶対に公開してはいけません**</u>
-
-**手順:**
-
-1. **必要なツール**
-
-- Windows 10 SDK  
-  - signtool.exe が含まれます
-
-2. **証明書の作成（自己署名）**
-
-```powershell
-$pwd = ConvertTo-SecureString -String "YourPasswordHere" -Force -AsPlainText
-$cert = New-SelfSignedCertificate -Type Custom -Subject "CN=Gmail PWA" `
-    -CertStoreLocation "Cert:\CurrentUser\My" -KeyExportPolicy Exportable -KeySpec Signature
-Export-PfxCertificate -Cert "Cert:\CurrentUser\My\$($cert.Thumbprint)" `
-    -FilePath "C:\GmailPWA\GmailPWA.pfx" -Password $pwd
-```
-
-- `.pfx` には秘密鍵 + 公開鍵が含まれます  
-- CER（公開鍵のみ）では署名できません。CER は署名の検証用です
-
-3. **MSIX パッケージへの署名**
-
-```powershell
-signtool sign /fd SHA256 /a /f "C:\GmailPWA\GmailPWA.pfx" /p YourPasswordHere "Gmail PWA.sideload.msix"
-```
-
-4. **インストール**
-
-```powershell
-Add-AppxPackage -Path "Gmail PWA.sideload.msix"
-```
-
----
-
-### **署名方法 2: MSIX Packaging Tool を使用する（GUI・独自署名用）**
-
-- [MSIX Packaging Tool (Microsoft Store)](https://www.microsoft.com/store/productId/9n5lw3jbcxkf) を使用して、GUI 上で MSIX を生成・署名可能  
-- 独自署名を設定可能で、署名後は自己責任で配布できます
-
-**手順:**
-
-1. MSIX Packaging Tool を起動  
-2. 「パッケージエディタ」を選択  
-3. 署名するパッケージを選択  
-4. 「Signing」から独自署名を指定（`.pfx`ファイル）  
-5. パッケージを生成後、Sideload または内部配布可能
-
-> ⚠️ 注意  
-> - PFX を絶対に公開してはいけません  
-> - 自己署名のため、Windows に「信頼済み」として登録する必要があります
-
----
-
-### **署名方法 3: Microsoft Store GUI アプリで署名（公式配布用）**
-
-- PWABuilder で生成した MSIX を Microsoft Store 用アプリに取り込み、GUI で署名・配布可能  
-- 署名は自動的に行われ、第三者認証付きとなるため、ユーザーは安心してインストール可能です
+> - 自己署名の PFX は絶対に公開しないこと  
+> - この方法は上級者向けです。操作ミスによりインストールに失敗する場合があります
 
 ---
 
