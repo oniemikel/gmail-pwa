@@ -1,12 +1,12 @@
 {
-  "id": "/",
+  "id": "/gmail-pwa/",
   "name": "Gmail PWA Launcher",
   "short_name": "Gmail PWA",
   "description": "A lightweight PWA launcher that opens Gmail and handles mailto: as default email app.",
   "dir": "ltr",
   "lang": "ja-JP",
-  "start_url": "/index.html?source=pwa",
-  "scope": "/",
+  "start_url": "/gmail-pwa/index.html?source=pwa",
+  "scope": "/gmail-pwa/",
   "display": "minimal-ui",
   "display_override": ["window-controls-overlay", "browser"],
   "background_color": "#ffffff",
@@ -59,7 +59,7 @@
   "protocol_handlers": [
     {
       "protocol": "mailto",
-      "url": "./handler/mailto.html?url=%s"
+      "url": "/gmail-pwa/handler/mailto.html?url=%s"
     }
   ],
   "shortcuts": [
@@ -80,7 +80,7 @@
   "prefer_related_applications": true,
   "handle_links": "preferred",
   "share_target": {
-    "action": "../index.html",
+    "action": "/gmail-pwa/index.html",
     "method": "GET",
     "params": {
       "title": "title",

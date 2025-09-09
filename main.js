@@ -1,7 +1,9 @@
 // Service Worker 登録
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
-    .register("./service-worker.js")
+    .register("/gmail-pwa/service-worker.js", {
+      scope: "/gmail-pwa/",
+    })
     .then((registration) => {
       console.log("Service Worker registered:", registration);
 
