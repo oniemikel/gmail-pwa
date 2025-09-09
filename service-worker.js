@@ -8,8 +8,8 @@ const APP_SHELL = [
   "/gmail-pwa/main.js",
   "/gmail-pwa/offline.html",
   "/gmail-pwa/icons/monochrome.svg",
-  "/gmail-pwa/handler/compose.html",
-  "/gmail-pwa/handler/mailto.html",
+  "/gmail-pwa/public/handler/compose.html",
+  "/gmail-pwa/public/handler/mailto.html",
   // 他のアセットも追加
   // "/gmail-pwa/style.css",
   // "/gmail-pwa/favicon.ico",
