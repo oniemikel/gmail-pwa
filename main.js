@@ -78,7 +78,7 @@ if ("serviceWorker" in navigator) {
     if ("registerProtocolHandler" in navigator) {
       navigator.registerProtocolHandler(
         "mailto",
-        "/gmail-pwa/handler/mailto.html?url=%s", // GitHub Pages用パス
+        "/gmail-pwa/public/handler/mailto.html?url=%s", // GitHub Pages用パス
         "Gmail PWA Launcher"
       );
     }
