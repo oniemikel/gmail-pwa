@@ -3,11 +3,13 @@
 const CACHE_NAME = "gmail-pwa-shell-v1";
 // パスをGitHub Pagesのサブディレクトリ構成に合わせて修正
 const APP_SHELL = [
-  "/gmail-pwa/public/manifest.json",
+  "/gmail-pwa/manifest.json",
   "/gmail-pwa/index.html",
   "/gmail-pwa/main.js",
   "/gmail-pwa/offline.html",
-  "/gmail-pwa/public/icons/monochrome.svg",
+  "/gmail-pwa/icons/monochrome.svg",
+  "/gmail-pwa/handler/compose.html",
+  "/gmail-pwa/handler/mailto.html",
   // 他のアセットも追加
   // "/gmail-pwa/style.css",
   // "/gmail-pwa/favicon.ico",
