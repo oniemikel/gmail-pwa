@@ -7,10 +7,10 @@ const APP_SHELL = [
   "/gmail-pwa/index.html",
   "/gmail-pwa/main.js",
   "/gmail-pwa/offline.html",
-  "/gmail-pwa/icons/monochrome.svg",
+  "/gmail-pwa/public/icons/monochrome.svg",
   // 他のアセットも追加
-  "/gmail-pwa/style.css",
-  "/gmail-pwa/favicon.ico",
+  // "/gmail-pwa/style.css",
+  // "/gmail-pwa/favicon.ico",
 ];
 
 // Install: アプリシェルをキャッシュ
